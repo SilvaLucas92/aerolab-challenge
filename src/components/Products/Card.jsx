@@ -9,11 +9,17 @@ import {
   Button,
   HStack,
 } from "@chakra-ui/react";
+import { useMemo } from "react";
 import iconBlue from "../../assets/icons/buy-blue.svg";
 import iconWhite from "../../assets/icons/buy-white.svg";
 import coin from "../../assets/icons/coin.svg";
+import { useGlobalContext } from '../../context/userContext';
+
 const Card = ({ pdt, setSelected, isSelected }) => {
-  console.log(pdt)
+  const { user, handlePoints } = useGlobalContext();
+  const canBuy = useMemo(() => {
+    return user.points >= pdt.cost
+  }, [user, pdt])
   return (
     <Box position="relative">
       <Stack
@@ -26,7 +32,14 @@ const Card = ({ pdt, setSelected, isSelected }) => {
         w="100%"
       >
         <Flex justify="end" pb={1}>
-          <Image boxSize={8} src={isSelected ? iconWhite : iconBlue} />
+          {!canBuy ? (
+            <HStack p={2} borderRadius='20px' bg="gray.500">
+              <Text color='white' opacity={0.9}>You need {pdt?.cost - user?.points}</Text>
+              <Image src={coin} />
+            </HStack>
+          ) : (
+            <Image boxSize={8} src={iconBlue} />
+          )}
         </Flex>
         <Image src={pdt.img.url} />
         <Divider my={2} />
@@ -35,7 +48,7 @@ const Card = ({ pdt, setSelected, isSelected }) => {
           <Text>{pdt.name}</Text>
         </VStack>
       </Stack>
-      {isSelected && (
+      {isSelected && canBuy && (
         <Flex
           position="absolute"
           h="100%"
@@ -65,10 +78,12 @@ const Card = ({ pdt, setSelected, isSelected }) => {
             </Flex>
             <Stack h="100%" w="100%" justify="center" align="center">
               <HStack>
-                <Text fontSize={'xl'} fontWeight='bold'>12000</Text>
+                <Text fontSize={"xl"} fontWeight="bold">
+                  {pdt?.cost}
+                </Text>
                 <Image src={coin} />
               </HStack>
-              <Button>Redeem Now</Button>
+              <Button onClick={() => handlePoints(pdt.cost)}>Redeem Now</Button>
             </Stack>
           </Stack>
         </Flex>
