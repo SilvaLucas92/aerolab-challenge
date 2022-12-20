@@ -20,8 +20,12 @@ const AppProvider = ({ children }) => {
       });
   }, [url]);
 
-  const handlePoints = (amount) => {
-    return setUser({ ...user, points: user.points - amount });
+  const handlePoints = (amount, pdt) => {
+    return setUser({
+      ...user,
+      points: user.points - amount,
+      redeemHistory: [...user.redeemHistory, pdt],
+    });
   };
 
   return (

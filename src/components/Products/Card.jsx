@@ -18,8 +18,9 @@ import { useGlobalContext } from '../../context/userContext';
 const Card = ({ pdt, setSelected, isSelected }) => {
   const { user, handlePoints } = useGlobalContext();
   const canBuy = useMemo(() => {
-    return user.points >= pdt.cost
+    return user?.points >= pdt?.cost
   }, [user, pdt])
+  
   return (
     <Box position="relative">
       <Stack
@@ -83,7 +84,7 @@ const Card = ({ pdt, setSelected, isSelected }) => {
                 </Text>
                 <Image src={coin} />
               </HStack>
-              <Button onClick={() => handlePoints(pdt.cost)}>Redeem Now</Button>
+              <Button onClick={() => handlePoints(pdt.cost, pdt)}>Redeem Now</Button>
             </Stack>
           </Stack>
         </Flex>
